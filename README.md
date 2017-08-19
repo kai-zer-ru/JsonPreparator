@@ -155,3 +155,33 @@ function test() {
 }
 
 ```
+
+## Field Types
+
+```
+1. "integer"
+    - Integer number
+    - Options:
+        a) default - the default value if there is no element in the incoming array
+2. "float"
+    - A float number
+    - Options:
+        a) default - the default value if there is no element in the incoming array
+        b) format - number format:
+            - decimals - how many decimal places
+            - dec_point - decimal separator
+            - thousands_sep - thousands separator
+3. "string"
+    - String
+    - Options:
+        a) default - the default value if there is no element in the incoming array
+4. "object"
+    - Object {} (associative array)
+    - Options:
+        a) components - the list of components of the object
+5. "array"
+    - Array []
+    - Options:
+        a) values ​​- list of array values
+
+```
