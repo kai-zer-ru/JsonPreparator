@@ -13,7 +13,9 @@
 	
 	class JsonPreparator {
 		private $schema = [];
-		public function __construct($schemaPath) {
+		private $require;
+		public function __construct($schemaPath, $require = false) {
+			$this->require = $require;
 			if (is_array($schemaPath)) {
 				$this->schema = $schemaPath;
 			} else {
@@ -36,15 +38,18 @@
 		private function iteration($inputData) {
 			$outputData = [];
 			foreach ($this->schema as $key => $value) {
+				$require = Arr::get($value, "require", $this->require);
 				switch ($value["type"]) {
 					case "integer":
 						if (array_key_exists($key, $inputData)) {
 							$outputData[ $key ] = intval($inputData[ $key ]);
 						} else {
-							if (array_key_exists("default", $value)) {
-								$outputData[ $key ] = intval($value["default"]);
-							} else {
-								$outputData[ $key ] = 0;
+							if ($require) {
+								if (array_key_exists("default", $value)) {
+									$outputData[ $key ] = intval($value["default"]);
+								} else {
+									$outputData[ $key ] = 0;
+								}
 							}
 						}
 						break;
@@ -53,10 +58,12 @@
 						if (array_key_exists($key, $inputData)) {
 							$outputData[ $key ] = number_format($inputData[ $key ], Arr::get($format, "decimals", "2"), Arr::get($format, "dec_point", "."), Arr::get($format, "thousands_sep", ""));
 						} else {
-							if (array_key_exists("default", $value)) {
-								$outputData[ $key ] = number_format($value["default"], Arr::get($format, "decimals", "2"), Arr::get($format, "dec_point", "."), Arr::get($format, "thousands_sep", ""));;
-							} else {
-								$outputData[ $key ] = 0.00;
+							if ($require) {
+								if (array_key_exists("default", $value)) {
+									$outputData[ $key ] = number_format($value["default"], Arr::get($format, "decimals", "2"), Arr::get($format, "dec_point", "."), Arr::get($format, "thousands_sep", ""));;
+								} else {
+									$outputData[ $key ] = 0.00;
+								}
 							}
 						}
 						break;
@@ -64,15 +71,17 @@
 						if (array_key_exists($key, $inputData)) {
 							$outputData[ $key ] = strval($inputData[ $key ]);
 						} else {
-							if (array_key_exists("default", $value)) {
-								$outputData[ $key ] = strval($value["default"]);
-							} else {
-								$outputData[ $key ] = "";
+							if ($require) {
+								if (array_key_exists("default", $value)) {
+									$outputData[ $key ] = strval($value["default"]);
+								} else {
+									$outputData[ $key ] = "";
+								}
 							}
 						}
 						break;
 					case "object":
-						$val = new JsonPreparator($value["components"]);
+						$val = new JsonPreparator($value["components"], $this->require);
 						if (array_key_exists($key, $inputData)) {
 							$data = $inputData[ $key ];
 							if ($data) {
@@ -82,12 +91,14 @@
 							}
 							
 						} else {
-							if (array_key_exists("default", $value)) {
-								$data = $value["default"];
-								$outputData[ $key ] = $val->prepare($data);
-								
-							} else {
-								$outputData[ $key ]= null;
+							if ($require) {
+								if (array_key_exists("default", $value)) {
+									$data = $value["default"];
+									$outputData[ $key ] = $val->prepare($data);
+									
+								} else {
+									$outputData[ $key ] = null;
+								}
 							}
 						}
 						break;
@@ -101,7 +112,9 @@
 										$outputData[ $key ] [] = strval($dataVal);
 									}
 								} else {
-									$outputData[ $key ] [] = "";
+									if ($require) {
+										$outputData[ $key ] [] = "";
+									}
 								}
 								break;
 							case "integer":
@@ -111,7 +124,9 @@
 										$outputData[ $key ] [] = intval($dataVal);
 									}
 								} else {
-									$outputData[ $key ] [] = 0;
+									if ($require) {
+										$outputData[ $key ] [] = 0;
+									}
 								}
 								break;
 							case "object":
@@ -123,12 +138,14 @@
 										$outputData[ $key ] [] = $dataVal;
 									}
 								} else {
-									$outputData[ $key ] [] = (object) [];
+									if ($require) {
+										$outputData[ $key ] [] = (object)[];
+									}
 								}
 								break;
 							default:
 								break;
-							}
+						}
 						break;
 					default:
 						break;

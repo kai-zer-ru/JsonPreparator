@@ -18,6 +18,7 @@ composer require kaizer666/json-preparator
 use Json\JsonPreparator;
 
 function test() {
+    $require = true;
     $schema = "/path/to/schema.json";
     $data = json_decode('{
       "integer_with_def": 2.0002,
@@ -53,7 +54,7 @@ function test() {
       ]
     }', true);
                 
-    $preparator = new JsonPreparator($schema);
+    $preparator = new JsonPreparator($schema, $require);
     $output = $preparator->prepare($data);
     return response()->json($output);
 }
@@ -66,7 +67,8 @@ function test() {
 {
   "integer_with_def": {
 	"type": "integer",
-	"default": "32"
+	"default": "32",
+	"require": false
   },
   "integer": {
 	"type": "integer"
@@ -77,7 +79,8 @@ function test() {
 	  "decimals":2,
 	  "dec_point":".",
 	  "thousands_sep":" "
-	}
+	},
+    "require": false
   },
   "string": {
 	"type":"string"
@@ -87,7 +90,8 @@ function test() {
 	"components": {
 	  "integer_with_def": {
 		"type": "integer",
-		"default": "32"
+		"default": "32",
+        "require": false
 	  },
 	  "integer": {
 		"type": "integer"
@@ -105,7 +109,8 @@ function test() {
   "array_string":{
 	"type": "array",
 	"values": {
-	  "type": "string"
+	  "type": "string",
+      "require": false
 	}
   },
   "array_integer":{
@@ -163,6 +168,7 @@ function test() {
     - Integer number
     - Options:
         a) default - the default value if there is no element in the incoming array
+        b) require - a required value
 2. "float"
     - A float number
     - Options:
@@ -171,17 +177,21 @@ function test() {
             - decimals - how many decimal places
             - dec_point - decimal separator
             - thousands_sep - thousands separator
+        c) require - a required value
 3. "string"
     - String
     - Options:
         a) default - the default value if there is no element in the incoming array
+        b) require - a required value
 4. "object"
     - Object {} (associative array)
     - Options:
         a) components - the list of components of the object
+        b) require - a required value
 5. "array"
     - Array []
     - Options:
         a) values ​​- list of array values
+        b) require - a required value
 
 ```

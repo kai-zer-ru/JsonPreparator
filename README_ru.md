@@ -65,7 +65,8 @@ function test() {
 {
   "integer_with_def": {
 	"type": "integer",
-	"default": "32"
+	"default": "32",
+	"require": false
   },
   "integer": {
 	"type": "integer"
@@ -76,7 +77,8 @@ function test() {
 	  "decimals":2,
 	  "dec_point":".",
 	  "thousands_sep":" "
-	}
+	},
+    "require": false
   },
   "string": {
 	"type":"string"
@@ -86,7 +88,8 @@ function test() {
 	"components": {
 	  "integer_with_def": {
 		"type": "integer",
-		"default": "32"
+		"default": "32",
+        "require": false
 	  },
 	  "integer": {
 		"type": "integer"
@@ -104,7 +107,8 @@ function test() {
   "array_string":{
 	"type": "array",
 	"values": {
-	  "type": "string"
+	  "type": "string",
+      "require": false
 	}
   },
   "array_integer":{
@@ -162,6 +166,7 @@ function test() {
     - Целое число
     - Параметры:
         a) default - значение, установленное по умолчанию в случае отсутствия элемента во входящем массиве
+        b) require - обязательное ли значение
 2. "float"
     - Дробное число
     - Параметры:
@@ -170,17 +175,21 @@ function test() {
             - decimals - сколько знаков после запятой
             - dec_point - разделитель десятичных
             - thousands_sep - разделитель тысяч
+        с) require - обязательное ли значение
 3. "string"
     - Строка
     - Параметры:
         a) default - значение, установленное по умолчанию в случае отсутствия элемента во входящем массиве
+        b) require - обязательное ли значение
 4. "object"
     - Объект {} (ассоциативный массив)
     - Параметры:
         a) components - список компонентов объекта
+        b) require - обязательное ли значение
 5. "array"
     - Массив []
     - Параметры:
         a) values - список значений массива
+        b) require - обязательное ли значение
         
 ```
